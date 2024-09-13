@@ -84,8 +84,12 @@ int main(int argc, char *argv[]) {
   }
 
   if (addstring != NULL) {
+    // evaluate this so we can use it for realloc. when directly using 
+    // the -> notation in the realloc function things get weird. 
+    int count = db_header->count+1;
+    
     // reallocate employees so that enough space is allocated for one more employee
-    employees = realloc(employees, (db_header->count+1 * sizeof(struct employee_t)));
+    employees = realloc(employees, (count * sizeof(struct employee_t)));
     if (employees == NULL) {
       perror("realloc");
       return STATUS_ERROR;
@@ -110,5 +114,7 @@ int main(int argc, char *argv[]) {
     return STATUS_ERROR;
   }
   
+  free(db_header);
+  free(employees);
   return 0;
 }

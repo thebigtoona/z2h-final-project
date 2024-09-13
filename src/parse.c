@@ -22,13 +22,11 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees, char *a
   char* addr = strtok(NULL, ",");
   char* hours = strtok(NULL, ",");
 
-  printf("add_employee: name=%s;addr=%s;hours=%s;\n", name, addr, hours);
-
   // copy the employee into the last entry in employees which is assumed to be big enough at 
   // this point.
   strncpy(employees[dbhdr->count].name, name, sizeof(employees[dbhdr->count].name));
   strncpy(employees[dbhdr->count].address, addr, sizeof(employees[dbhdr->count].address));
-  
+
   // atoi returns the converted value or 0 on error;
   employees[dbhdr->count].hours = atoi(hours);
 
@@ -50,11 +48,8 @@ int read_employees(int fd, struct dbheader_t *dbhdr, struct employee_t **employe
   struct employee_t* employees = calloc(count, sizeof(struct employee_t));
   if (employees == NULL) {
     perror("calloc");
-    printf("read_employees: allocation failure at calloc. exiting.. \n");
     return STATUS_ERROR;
   }
-  printf("emp size %ld\n", sizeof(struct employee_t));
-  printf("emp size at calloc: %ld\n", sizeof(*employees));
 
   // because we've already read the header at this point. the cursor is in the correct 
   // spot to start reading employees. 
@@ -113,8 +108,6 @@ int output_file(int fd, struct dbheader_t *dbhdr, struct employee_t *employees) 
 
   // iterate through the employees and write the employees data 
   for (int i; i < realcount; i++) {
-    printf("output_file: employees[i] = { name = %s; address = %s; hours = %d }\n", employees[i].name, employees[i].address, employees[i].hours);
-    
     // do conversion for numerical values to network endian 
     employees[i].hours = htonl(employees[i].hours);
 
